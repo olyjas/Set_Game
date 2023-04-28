@@ -17,10 +17,11 @@ function init() {
   id('start-btn').addEventListener('click', startGame);
   }
 
+
 function startGame() {
   toggleViews();
   startTimer();
-  generateUniqueCard(true);
+  generateUniqueCard(checkDifficulty);
   createBoard();
 
 }
@@ -38,6 +39,7 @@ function startGame() {
     // code for function goes here
     id('game-view').classList.toggle('hidden');
     id('menu-view').classList.toggle('hidden');
+    id('refresh-btn').addEventListener('click', refreshBoard);
 
     if(!(id('menu-view').classList.contains('hidden'))) {
       resetBoard();
@@ -63,24 +65,58 @@ function startGame() {
         return randomAttributes;
   }
 
-  function generateUniqueCard(isEasy) {
-    let randomGenerator = generateRandomAttributes(isEasy);
-    // set the src
-    const card = gen('div');
-    for (let i = 0; i < randomGenerator[3]; i++) {
-      let image = gen('img');
-      image.src = 'img/' + randomGenerator[0] + '-' + randomGenerator[1] + '-' + randomGenerator[2] + '.png';
-      console.log(image.src);
-      let cardName = randomGenerator[0] + '-' + randomGenerator[1] + '-' + randomGenerator[2] + '-' + i + 1;
-      image.alt = cardName;
+  //function checkDifficulty() {
+  //  let difficultySetting = qsa('input[name="diff"].checked');
+  //  for (let i = 0; i < difficultySetting.length; i++) {
+  //    if (difficultySetting[i].value === 'easy') {
+  //        return true;
+  //      } else {
+  //        return false;
+  //      }
+  //    }
+  //  }
 
-      card.appendChild(image);
-      card.setAttribute('id', cardName);
-      card.classList.add('card');
-      card.addEventListener('click', cardSelected);
+  function checkDifficulty() {
+    let difficultySetting = qsa('input');
+    for (let i = 0; i < difficultySetting.length; i++) {
+      if (difficultySetting[i].checked) {
+        if (difficultySetting[i].value == 'easy') {
+          return true;
+        } else {
+          return false
+        }
+      }
     }
-    return card;
+    return true;
   }
+
+  function generateUniqueCard(isEasy) {
+    let cardName;
+    let attributesGenerator = generateRandomAttributes(isEasy);
+    let card = gen('div');
+    cardName  = attributesGenerator[0] + '-' + attributesGenerator[1] + '-' + attributesGenerator[0]
+                 + '-' + attributesGenerator[2] + '-' + attributesGenerator[3];
+
+    while(id(cardName) !== null) {
+      attributesGenerator = generateRandomAttributes(isEasy);
+      cardName = attributesGenerator[0] + '-' + attributesGenerator[1] + '-' + attributesGenerator[0]
+      + '-' + attributesGenerator[2] + '-' + attributesGenerator[3];
+      }
+
+    card.addEventListener('click', cardSelected);
+    card.id = cardName;
+    card.setAttribute('id', cardName);
+    card.classList.add('card');
+
+    for (let i = 0; i < attributesGenerator[3]; i++) {
+      let image = gen('img');
+      image.src = 'img/' + attributesGenerator[0] + '-' + attributesGenerator[1] + '-' + attributesGenerator[2] + '.png';
+      image.alt = card.id;
+      card.appendChild(image);
+      }
+    return card;
+    }
+
 
   function startTimer() {
     // code for function goes here
@@ -96,7 +132,7 @@ function startGame() {
 
     if (remainingSeconds === 0) {
       clearInterval(timerId);
-      qsa('.card').disabled = true;
+      id('refresh-btn').disabled = true;
     }
   }
 
@@ -116,18 +152,27 @@ function startGame() {
   }
 
   function createBoard() {
-    for (let i = 0; i < 12; i++) {
-      const board = id('board');
-      const cardBoard = generateUniqueCard(true);
-      board.appendChild(cardBoard);
+    let basedOnDifficulty = checkDifficulty();
+    let numberOfCards;
+
+    if (basedOnDifficulty === true) {
+      numberOfCards = 9;
+    } else {
+      numberOfCards = 12;
+    }
+
+    for (let i = 0; i < numberOfCards; i++) {
+      let board = id('board');
+      let cardBoard = generateUniqueCard(basedOnDifficulty);
+      if (!board.contains(cardBoard)) {
+        board.appendChild(cardBoard);
+      }
     }
   }
 
   function refreshBoard() {
     resetBoard();
-    resetTimer();
     createBoard();
-    startTimer();
   }
 
   function resetTimer() {
@@ -144,12 +189,49 @@ function startGame() {
   }
 
   function cardSelected() {
-    // code for function goes here
-    qs('.card').classList.toggle('selected');
+    this.classList.toggle('selected');
+    let selected = qsa('.selected');
+    let result;
+    if (selected.length === 3) {
+      result = isASet(selected);
+      for(let i = 0; i < 3; i++) {
+        let remove = selected[i].id;
+        let card = id(remove);
+        card.classList.remove('selected');
+        let setText = gen('p');
+
+        if (result === false) {
+          setText.textContent = "Not a Set";
+          card.appendChild(setText);
+          card.classList.add('hide-imgs');
+
+          setTimeout( () => {
+            id(remove).classList.remove('hide-imgs');
+            id(remove).removeChild(setText);
+          }, 1000)
+
+        } else {
+          setText.textContent = "SET!";
+          let difficultySetting = checkDifficulty();
+          let newCard = generateUniqueCard(difficultySetting);
+          createBoard(newCard);
+          newCard.appendChild(setText);
+          newCard.addList.add('hide-imgs');
+          let parent = card.parentNode;
+          parent.replaceChild(newCard, card);
+
+          setTimeout( () => {
+            newCard.classList.remove('hide-imgs');
+            newCard.removeChild(setText);
+          }, 1000)
+        }
+      }
+      if(result === true) {
+        id('set-count').textContent = id('set-count').textContent + 1;
+      }
+    }
   }
-
-
-      /**
+  /**
    * Checks to see if the three selected cards make up a valid set. This is done by comparing each
    * of the type of attribute against the other two cards. If each four attributes for each card are
    * either all the same or all different, then the cards make a set. If not, they do not make a set
@@ -190,6 +272,5 @@ function startGame() {
   function qsa(selector) {
     return document.querySelectorAll(selector);
   }
-
 }
 )();
