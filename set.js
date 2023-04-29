@@ -1,10 +1,9 @@
-/*
-  Jasmine Zhang
-  4/27/2023
-  SECTION AG
-  TA: TARA WUEGER & ALLISON HO
-
-  This is the set.js page of HW2. It manages game UI and behavior.
+/**
+ * Jasmine Zhang
+ * 4/28/2023
+ * SECTION AG
+ * TA: TARA WUEGER & ALLISON HO
+ * This is the set.js page of HW2. It manages the UI and behavior of the game "Set".
 */
 
 'use strict';
@@ -85,6 +84,7 @@ function startGame() {
   function generateUniqueCard(isEasy) {
     let cardName;
     let attributesGenerator = generateRandomAttributes(checkDifficulty());
+    console.log(checkDifficulty());
     let card = gen('div');
     cardName = attributesGenerator[0] + '-' + attributesGenerator[1]
                  + '-' + attributesGenerator[2] + '-' + attributesGenerator[3];
