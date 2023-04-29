@@ -95,7 +95,6 @@ function startGame() {
     card.addEventListener('click', cardSelected);
     card.id = cardName;
     card.setAttribute('id', cardName);
-    console.log(card.id);
     card.classList.add('card');
 
     for (let i = 0; i < attributesGenerator[3]; i++) {
@@ -185,7 +184,7 @@ function startGame() {
 
     if (selectedCards.length === 3) {
       if (isASet(selectedCards)) {
-        id('set-count').textContent = (id('set-count').textContent) + 1;
+        id('set-count').textContent = parseInt(id('set-count').textContent) + 1;
         for (let i = 0; i < selectedCards.length; i++) {
           selectedCards[i].classList.toggle('selected');
           }
@@ -218,7 +217,7 @@ function startGame() {
             id(remove).classList.remove("hide-imgs");
             id(remove).removeChild(setText);
           }, 1000)
-
+          console.log(selectedCards[i]);
           }
         }
       }
