@@ -261,18 +261,18 @@
   function cardSelected() {
     this.classList.toggle('selected');
     let selectedCards = qsa('.selected');
-    const timeForMessage = 1000;
     if (selectedCards.length === 3) {
       yesSet();
       } else {
-        noSet();
-      }
+      noSet();
     }
+  }
 
   /**
    * Helper function for cardsSelected providing the functionality for if the cards make a set.
    */
   function yesSet() {
+    const timeForMessageY = 1000;
     if (isASet(selectedCards)) {
       id('set-count').textContent = parseInt(id('set-count').textContent) + 1;
       for (let i = 0; i < selectedCards.length; i++) {
@@ -289,15 +289,17 @@
         setTimeout(() => {
           replacementCard.classList.remove('hide-imgs');
           replacementCard.removeChild(setText);
-        }, timeForMessage);
+        }, timeForMessageY);
       }
     }
   }
 
   /**
-   * Helper function for cardsSelected providing the functionality for if the cards do not make a set.
+   * Helper function for cardsSelected providing the functionality for if the cards do not make
+   * a set.
    */
   function noSet() {
+    const timeForMessageN = 1000;
     for (let i = 0; i < selectedCards.length; i++) {
       let setText = gen('p');
       setText.textContent = 'Not a Set';
@@ -310,7 +312,7 @@
       setTimeout(() => {
         id(remove).classList.remove('hide-imgs');
         id(remove).removeChild(setText);
-      }, timeForMessage);
+      }, timeForMessageN);
     }
   }
 
