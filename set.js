@@ -27,7 +27,6 @@ function startGame() {
   startTimer();
   generateUniqueCard(checkDifficulty);
   createBoard();
-
 }
 
   // Required module globals
@@ -124,7 +123,12 @@ function startGame() {
     if (remainingSeconds === 0) {
       clearInterval(timerId);
       id('refresh-btn').disabled = true;
-      qs('.card').classList.remove('selected');
+      //qsa('.card').classList.remove('selected');
+      let cardsToUnselect = qsa('.card');
+      for (let i = 0; i < cardsToUnselect.length; i++) {
+        cardsToUnselect[i].classList.remove('selected');
+        cardsToUnselect[i].classList.remove('hide-imgs');
+      }
     }
   }
 
@@ -199,7 +203,7 @@ function startGame() {
             id('board').replaceChild(newCard, selectedCards[i]);
 
             setTimeout(() => {
-              newCard.classList.remove("hide-imgs");
+              newCard.classList.remove('hide-imgs');
               newCard.removeChild(setText);
             }, 1000)
           }
@@ -207,15 +211,15 @@ function startGame() {
       else {
         for(let i = 0; i < selectedCards.length; i++) {
           let setText = gen('p');
-          setText.textContent = "Not a Set";
+          setText.textContent = 'Not a Set';
           selectedCards[i].classList.toggle('selected');
           let remove = selectedCards[i].id;
           let card = id(remove);
           card.appendChild(setText);
-          card.classList.add("hide-imgs");
+          card.classList.add('hide-imgs');
 
           setTimeout(() => {
-            id(remove).classList.remove("hide-imgs");
+            id(remove).classList.remove('hide-imgs');
             id(remove).removeChild(setText);
           }, 1000)
           }
