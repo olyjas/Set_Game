@@ -17,6 +17,8 @@ function init() {
   id('start-btn').addEventListener('click', startGame);
   id('back-btn').addEventListener('click', () =>
     id('refresh-btn').disabled = false);
+  id('back-btn').addEventListener('click', () =>
+    id('set-count').textContent = 0);
   }
 
 
@@ -122,6 +124,7 @@ function startGame() {
     if (remainingSeconds === 0) {
       clearInterval(timerId);
       id('refresh-btn').disabled = true;
+      qs('.card').classList.remove('selected');
     }
   }
 
@@ -181,13 +184,12 @@ function startGame() {
     this.classList.toggle('selected');
     let selectedCards = qsa('.selected');
     let newCard;
-
     if (selectedCards.length === 3) {
       if (isASet(selectedCards)) {
         id('set-count').textContent = parseInt(id('set-count').textContent) + 1;
         for (let i = 0; i < selectedCards.length; i++) {
           selectedCards[i].classList.toggle('selected');
-          }
+        }
         for (let i = 0; i < selectedCards.length; i++) {
             let setText = gen('p');
             setText.textContent = "SET!"
@@ -199,10 +201,9 @@ function startGame() {
             setTimeout(() => {
               newCard.classList.remove("hide-imgs");
               newCard.removeChild(setText);
-             }, 1000)
+            }, 1000)
           }
         }
-
       else {
         for(let i = 0; i < selectedCards.length; i++) {
           let setText = gen('p');
@@ -217,7 +218,6 @@ function startGame() {
             id(remove).classList.remove("hide-imgs");
             id(remove).removeChild(setText);
           }, 1000)
-          console.log(selectedCards[i]);
           }
         }
       }
