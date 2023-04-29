@@ -294,7 +294,7 @@
           setTimeout(() => {
             id(remove).classList.remove('hide-imgs');
             id(remove).removeChild(setText);
-          }, timeForMessage)
+          }, timeForMessage);
         }
       }
     }
