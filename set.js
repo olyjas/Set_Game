@@ -259,38 +259,43 @@
    * that formed a set.
    */
   function cardSelected() {
+    const timeForMessage = 1000;
     this.classList.toggle('selected');
     let selectedCards = qsa('.selected');
     if (selectedCards.length === 3) {
-      yesSet();
+      if (isASet(selectedCards)) {
+        id('set-count').textContent = parseInt(id('set-count').textContent) + 1;
+        for (let i = 0; i < selectedCards.length; i++) {
+          selectedCards[i].classList.toggle('selected');
+        }
+        for (let i = 0; i < selectedCards.length; i++) {
+          let setText = gen('p');
+          setText.textContent = 'SET!';
+          let replacementCard = generateUniqueCard(checkDifficulty());
+          replacementCard.appendChild(setText);
+          replacementCard.classList.add('hide-imgs');
+          id('board').replaceChild(replacementCard, selectedCards[i]);
+
+          setTimeout(() => {
+            replacementCard.classList.remove('hide-imgs');
+            replacementCard.removeChild(setText);
+          }, timeForMessage);
+        }
       } else {
-      noSet();
-    }
-  }
+        for (let i = 0; i < selectedCards.length; i++) {
+          let setText = gen('p');
+          setText.textContent = 'Not a Set';
+          selectedCards[i].classList.toggle('selected');
+          let remove = selectedCards[i].id;
+          let card = id(remove);
+          card.appendChild(setText);
+          card.classList.add('hide-imgs');
 
-  /**
-   * Helper function for cardsSelected providing the functionality for if the cards make a set.
-   */
-  function yesSet() {
-    let selectedCards = qsa('.selected');
-    const timeForMessageY = 1000;
-    if (isASet(selectedCards)) {
-      id('set-count').textContent = parseInt(id('set-count').textContent) + 1;
-      for (let i = 0; i < selectedCards.length; i++) {
-        selectedCards[i].classList.toggle('selected');
-      }
-      for (let i = 0; i < selectedCards.length; i++) {
-        let setText = gen('p');
-        setText.textContent = 'SET!';
-        let replacementCard = generateUniqueCard(checkDifficulty());
-        replacementCard.appendChild(setText);
-        replacementCard.classList.add('hide-imgs');
-        id('board').replaceChild(replacementCard, selectedCards[i]);
-
-        setTimeout(() => {
-          replacementCard.classList.remove('hide-imgs');
-          replacementCard.removeChild(setText);
-        }, timeForMessageY);
+          setTimeout(() => {
+            id(remove).classList.remove('hide-imgs');
+            id(remove).removeChild(setText);
+          }, timeForMessage);
+        }
       }
     }
   }
