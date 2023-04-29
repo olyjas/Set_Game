@@ -99,7 +99,7 @@
         if (difficultySetting[i].value === 'easy') {
           return true;
         }
-          return false;
+        return false;
       }
     }
   }
@@ -107,22 +107,23 @@
   /**
    * Creates a card and makes sure it has completely unique properties by utiizing the array
    * generated in generateRandomAttributes();
-   * @param {boolean} isEasy if true, difficulty level is easy and style of card will always be solid,
-   *                    otherwise the style attribute should be randomly selected.
+   * @param {boolean} isEasy if true, difficulty level is easy and style of card will always
+   *                  be solid, otherwise the style attribute should be randomly selected.
    * @return {div} an element that represents a card that has COUNT number of SHAPES
    *               of one COLOR and STYLE. If isEasy is true, the div returned will
    *               always have a solid STYLE.
    */
   function generateUniqueCard(isEasy) {
     let cardName;
-    let attributesGenerator = generateRandomAttributes(checkDifficulty());
+    isEasy = checkDifficulty();
+    let attributesGenerator = generateRandomAttributes(isEasy);
     let card = gen('div');
     cardName = attributesGenerator[0] + '-' + attributesGenerator[1] +
                '-' + attributesGenerator[2] + '-' + attributesGenerator[3];
-    while(id(cardName) !== null) {
+    while (id(cardName) !== null) {
       attributesGenerator = generateRandomAttributes(checkDifficulty());
-      cardName = attributesGenerator[0] + '-' + attributesGenerator[1]
-                + '-' + attributesGenerator[2] + '-' + attributesGenerator[3];
+      cardName = attributesGenerator[0] + '-' + attributesGenerator[1] +
+                 '-' + attributesGenerator[2] + '-' + attributesGenerator[3];
     }
     card.addEventListener('click', cardSelected);
     card.id = cardName;
@@ -144,7 +145,7 @@
    * and displays the time the player has left starting with that value.
    */
   function startTimer() {
-    let timeInterval = 1000;
+    const timeInterval = 1000;
     let selectedTiming = qs('select').value;
     remainingSeconds = selectedTiming;
     timerDisplay();
@@ -174,12 +175,12 @@
   }
 
   /**
-  * Displays the timer in a MM:SS format, and is called as a helper function for
-  * startTimer() and advanceTimer().
-  */
+   * Displays the timer in a MM:SS format, and is called as a helper function for
+   * startTimer() and advanceTimer().
+   */
   function timerDisplay() {
-    let secondsInMinute = 60;
-    let twoDigitSecondsMax = 10;
+    const secondsInMinute = 60;
+    const twoDigitSecondsMax = 10;
     let minutes = Math.floor(remainingSeconds / secondsInMinute);
     let seconds = remainingSeconds % secondsInMinute;
     let formattedSecs;
@@ -210,8 +211,8 @@
   function createBoard() {
     let basedOnDifficulty = checkDifficulty();
     let numberOfCards;
-    let easyCards = 9;
-    let standardCards = 12;
+    const easyCards = 9;
+    const standardCards = 12;
 
     if (basedOnDifficulty === true) {
       numberOfCards = easyCards;
@@ -260,8 +261,7 @@
   function cardSelected() {
     this.classList.toggle('selected');
     let selectedCards = qsa('.selected');
-    let replacementCard;
-    let timeForMessage = 1000;
+    const timeForMessage = 1000;
     if (selectedCards.length === 3) {
       if (isASet(selectedCards)) {
         id('set-count').textContent = parseInt(id('set-count').textContent) + 1;
@@ -277,9 +277,9 @@
           id('board').replaceChild(replacementCard, selectedCards[i]);
 
           setTimeout(() => {
-            newCard.classList.remove('hide-imgs');
-            newCard.removeChild(setText);
-          }, timeForMessage)
+            replacementCard.classList.remove('hide-imgs');
+            replacementCard.removeChild(setText);
+          }, timeForMessage);
         }
       } else {
         for (let i = 0; i < selectedCards.length; i++) {
@@ -294,7 +294,7 @@
           setTimeout(() => {
             id(remove).classList.remove('hide-imgs');
             id(remove).removeChild(setText);
-          }, 1000)
+          }, timeForMessage)
         }
       }
     }
@@ -327,6 +327,8 @@
 
   /**
    * Shortcut function for creating an element.
+   * @param {string} tagName - The tag name of the element to create.
+   * @returns {HTMLElement} The newly created element.
    */
   function gen(tagName) {
     return document.createElement(tagName);
@@ -334,6 +336,8 @@
 
   /**
    * Shortcut function for getting an element by an ID.
+   * @param {string} id - The ID of the element to retrieve.
+   * @returns {HTMLElement} The element with the specified ID.
    */
   function id(id) {
     return document.getElementById(id);
@@ -341,6 +345,8 @@
 
   /**
    * Shortcut function for query selecting an item.
+   * @param {string} selector - The CSS selector to match.
+   * @returns {HTMLElement} The first element that matches the specified selector.
    */
   function qs(selector) {
     return document.querySelector(selector);
@@ -348,6 +354,8 @@
 
   /**
    * Shortcut function for query selecting all items of a sort.
+   * @param {string} selector - The CSS selector to match.
+   * @returns {NodeList} A static NodeList containing all elements matching the specified selector.
    */
   function qsa(selector) {
     return document.querySelectorAll(selector);
