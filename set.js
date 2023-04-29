@@ -18,25 +18,25 @@
   window.addEventListener('load', init);
 
   /**
-  * A series of event listeners that are attached to the start and back buttons
-  * of the game. The start button ultimately showcases thw game board and starts the game.
-  * The back button ultimately brings the user back to the menu and ends the game
-  */
+   * A series of event listeners that are attached to the start and back buttons
+   * of the game. The start button ultimately showcases thw game board and starts the game.
+   * The back button ultimately brings the user back to the menu and ends the game
+   */
   function init() {
     id('back-btn').addEventListener('click', toggleViews);
     id('start-btn').addEventListener('click', startGame);
     id('back-btn').addEventListener('click', () => {
-      id('refresh-btn').disabled = false
+      id('refresh-btn').disabled = false;
     });
     id('back-btn').addEventListener('click', () => {
-      id('set-count').textContent = 0
+      id('set-count').textContent = 0;
     });
   }
 
   /**
-  * This function aids with the functionality of starting a new game
-  * by calling the necessary functions needed
-  */
+   * This function aids with the functionality of starting a new game
+   * by calling the necessary functions needed
+   */
   function startGame() {
     toggleViews();
     startTimer();
@@ -45,30 +45,31 @@
   }
 
   /**
-  * Switches between the menu view and game view of the game.
-  * Allows for the start and back buttons to work properly.
-  * When the user is on the menu view either, the board and timer from the game view will be
-  * reset entirely using helper functions so the game will be ready to play again when the
-  * user is ready.
-  */
-  function toggleViews()  {
+   * Switches between the menu view and game view of the game.
+   * Allows for the start and back buttons to work properly.
+   * When the user is on the menu view either, the board and timer from the game view will be
+   * reset entirely using helper functions so the game will be ready to play again when the
+   * user is ready.
+   */
+  function toggleViews() {
     id('game-view').classList.toggle('hidden');
     id('menu-view').classList.toggle('hidden');
     id('refresh-btn').addEventListener('click', refreshBoard);
 
-    if(!(id('menu-view').classList.contains('hidden'))) {
+    if (!(id('menu-view').classList.contains('hidden'))) {
       clearBoard();
       resetTimer();
     }
   }
 
   /**
-  * Generates an array containing a random style, shape, color and amount.
-  * These contents represent the different attributes each card can generate.
-  * @param {boolean} isEasy if true, difficulty level is easy and style of card will always be solid,
-  *                    otherwise the style attribute should be randomly selected.
-  * @return {array} a randomly generated array of attributes in the form [STYLE, SHAPE, COLOR, COUNT]
-  */
+   * Generates an array containing a random style, shape, color and amount.
+   * These contents represent the different attributes each card can generate.
+   * @param {boolean} isEasy if true, difficulty level is easy and style of card will always be solid,
+   *                    otherwise the style attribute should be randomly selected.
+   * @return {array} a randomly generated array of attributes in the form
+   * [STYLE, SHAPE, COLOR, COUNT]
+   */
   function generateRandomAttributes(isEasy) {
     let randomAttributes = [];
     if (isEasy === true) {
@@ -86,39 +87,38 @@
   }
 
   /**
-  * Checks if easy is selected in the game view before the game starts
-  * If easy is not selected, standard mode is.
-  * @return {boolean} If true, easy mode has been selected. If false, standard mode
-  *                   has been selected.
-  */
+   * Checks if easy is selected in the game view before the game starts
+   * If easy is not selected, standard mode is.
+   * @return {boolean} If true, easy mode has been selected. If false, standard mode
+   *                   has been selected.
+   */
   function checkDifficulty() {
     let difficultySetting = qsa('input');
     for (let i = 0; i < difficultySetting.length; i++) {
       if (difficultySetting[i].checked) {
-        if (difficultySetting[i].value == 'easy') {
+        if (difficultySetting[i].value === 'easy') {
           return true;
-        } else {
-          return false
         }
+          return false;
       }
     }
   }
 
   /**
-  * Creates a card and makes sure it has completely unique properties by utiizing the array
-  * generated in generateRandomAttributes();
-  * @param {boolean} isEasy if true, difficulty level is easy and style of card will always be solid,
-  *                    otherwise the style attribute should be randomly selected.
-  * @return {div} an element that represents a card that has COUNT number of SHAPES
-  *               of one COLOR and STYLE. If isEasy is true, the div returned will
-  *               always have a solid STYLE.
-  */
+   * Creates a card and makes sure it has completely unique properties by utiizing the array
+   * generated in generateRandomAttributes();
+   * @param {boolean} isEasy if true, difficulty level is easy and style of card will always be solid,
+   *                    otherwise the style attribute should be randomly selected.
+   * @return {div} an element that represents a card that has COUNT number of SHAPES
+   *               of one COLOR and STYLE. If isEasy is true, the div returned will
+   *               always have a solid STYLE.
+   */
   function generateUniqueCard(isEasy) {
     let cardName;
     let attributesGenerator = generateRandomAttributes(checkDifficulty());
     let card = gen('div');
-    cardName = attributesGenerator[0] + '-' + attributesGenerator[1]
-              + '-' + attributesGenerator[2] + '-' + attributesGenerator[3];
+    cardName = attributesGenerator[0] + '-' + attributesGenerator[1] +
+               '-' + attributesGenerator[2] + '-' + attributesGenerator[3];
     while(id(cardName) !== null) {
       attributesGenerator = generateRandomAttributes(checkDifficulty());
       cardName = attributesGenerator[0] + '-' + attributesGenerator[1]
@@ -131,7 +131,8 @@
 
     for (let i = 0; i < attributesGenerator[3]; i++) {
       let image = gen('img');
-      image.src = 'img/' + attributesGenerator[0] + '-' + attributesGenerator[1] + '-' + attributesGenerator[2] + '.png';
+      image.src = 'img/' + attributesGenerator[0] + '-' + attributesGenerator[1] +
+                  '-' + attributesGenerator[2] + '.png';
       image.alt = card.id;
       card.appendChild(image);
     }
@@ -139,34 +140,35 @@
   }
 
   /**
-  * Starts the timer for a new game and grabs the timing option selected in the game menu
-  * and displays the time the player has left starting with that value.
-  */
+   * Starts the timer for a new game and grabs the timing option selected in the game menu
+   * and displays the time the player has left starting with that value.
+   */
   function startTimer() {
+    let timeInterval = 1000;
     let selectedTiming = qs('select').value;
     remainingSeconds = selectedTiming;
     timerDisplay();
-    timerId = setInterval(advanceTimer, 1000);
+    timerId = setInterval(advanceTimer, timeInterval);
   }
 
   /**
-  * Updates the game timer by decrementing it with each passing second
-  * When the timer reaches 0, the board is disabled and the game view is stuck,
-  * all the cards that may have been selected are unselected, the user is unable
-  * to select another card, and the refresh button is disabled.
-  */
+   * Updates the game timer by decrementing it with each passing second
+   * When the timer reaches 0, the board is disabled and the game view is stuck,
+   * all the cards that may have been selected are unselected, the user is unable
+   * to select another card, and the refresh button is disabled.
+   */
   function advanceTimer() {
-  remainingSeconds--;
-  timerDisplay();
+    remainingSeconds--;
+    timerDisplay();
 
-  if (remainingSeconds === 0) {
-    clearInterval(timerId);
-    id('refresh-btn').disabled = true;
-    let cardsToUnselect = qsa('.card');
-    for (let i = 0; i < cardsToUnselect.length; i++) {
-      cardsToUnselect[i].classList.remove('selected');
-      cardsToUnselect[i].classList.remove('hide-imgs');
-      cardsToUnselect[i].removeEventListener('click', cardSelected);
+    if (remainingSeconds === 0) {
+      clearInterval(timerId);
+      id('refresh-btn').disabled = true;
+      let cardsToUnselect = qsa('.card');
+      for (let i = 0; i < cardsToUnselect.length; i++) {
+        cardsToUnselect[i].classList.remove('selected');
+        cardsToUnselect[i].classList.remove('hide-imgs');
+        cardsToUnselect[i].removeEventListener('click', cardSelected);
       }
     }
   }
@@ -176,11 +178,13 @@
   * startTimer() and advanceTimer().
   */
   function timerDisplay() {
-    let minutes = Math.floor(remainingSeconds / 60);
-    let seconds = remainingSeconds % 60;
+    let secondsInMinute = 60;
+    let twoDigitSecondsMax = 10;
+    let minutes = Math.floor(remainingSeconds / secondsInMinute);
+    let seconds = remainingSeconds % secondsInMinute;
     let formattedSecs;
 
-    if (seconds < 10) {
+    if (seconds < twoDigitSecondsMax) {
       formattedSecs = '0' + seconds;
       qs('#time').textContent = '0' + minutes + ':' + formattedSecs;
     } else {
@@ -190,8 +194,8 @@
   }
 
   /**
-  * This clears the interval at which timerId calls advancedTimer
-  */
+   * This clears the interval at which timerId calls advancedTimer
+   */
   function resetTimer() {
     clearInterval(timerId);
     remainingSeconds = qs('select').value;
@@ -199,18 +203,20 @@
   }
 
   /**
-  * Creates the game board by firstly taking the difficulty level selected into account
-  * by utilizing the checkDifficulty() function. Based on the difficulty, the board will
-  * generate 9 unique cards if easy is selected or 12 if standard is selected.
-  */
+   * Creates the game board by firstly taking the difficulty level selected into account
+   * by utilizing the checkDifficulty() function. Based on the difficulty, the board will
+   * generate 9 unique cards if easy is selected or 12 if standard is selected.
+   */
   function createBoard() {
     let basedOnDifficulty = checkDifficulty();
     let numberOfCards;
+    let easyCards = 9;
+    let standardCards = 12;
 
     if (basedOnDifficulty === true) {
-      numberOfCards = 9;
+      numberOfCards = easyCards;
     } else {
-      numberOfCards = 12;
+      numberOfCards = standardCards;
     }
 
     for (let i = 0; i < numberOfCards; i++) {
@@ -223,37 +229,39 @@
   }
 
   /**
-  * This is called when the refresh board button is clicked. It utilizes the helper functions
-  * clearBoard() to clear the existing cards on the board and createBoard() to generate
-  * a new collection of unique cards on the board. Together, these two helper functions
-  * make it possible for the user to generate a new board of cards while they are playing.
-  */
+   * This is called when the refresh board button is clicked. It utilizes the helper functions
+   * clearBoard() to clear the existing cards on the board and createBoard() to generate
+   * a new collection of unique cards on the board. Together, these two helper functions
+   * make it possible for the user to generate a new board of cards while they are playing.
+   */
   function refreshBoard() {
     clearBoard();
     createBoard();
   }
 
   /**
-  * This is a helper function that removes all the existing cards on the board
-  */
+   * This is a helper function that removes all the existing cards on the board
+   */
   function clearBoard() {
     let board = id('board');
     while (board.firstChild) {
       board.removeChild(board.firstChild);
     }
   }
+
   /**
-  * Called when a card is selected and checks how many are currently selected.
-  * If 3 cards are selected, isASet() is called to handle the cases where the cards make up a set
-  * or don't. Additionally, the drop shadow that appears when a card is selected is also removed
-  * and a message is displayed alerting the player if they have formed a set or not.
-  * If a set is formed, after the message, new cards will also be generated in place of the cards
-  * that formed a set.
-  */
+   * Called when a card is selected and checks how many are currently selected.
+   * If 3 cards are selected, isASet() is called to handle the cases where the cards make up a set
+   * or don't. Additionally, the drop shadow that appears when a card is selected is also removed
+   * and a message is displayed alerting the player if they have formed a set or not.
+   * If a set is formed, after the message, new cards will also be generated in place of the cards
+   * that formed a set.
+   */
   function cardSelected() {
     this.classList.toggle('selected');
     let selectedCards = qsa('.selected');
-    let newCard;
+    let replacementCard;
+    let timeForMessage = 1000;
     if (selectedCards.length === 3) {
       if (isASet(selectedCards)) {
         id('set-count').textContent = parseInt(id('set-count').textContent) + 1;
@@ -262,19 +270,19 @@
         }
         for (let i = 0; i < selectedCards.length; i++) {
           let setText = gen('p');
-          setText.textContent = 'SET!'
-          let newCard = generateUniqueCard(checkDifficulty());
-          newCard.appendChild(setText);
-          newCard.classList.add('hide-imgs');
-          id('board').replaceChild(newCard, selectedCards[i]);
+          setText.textContent = 'SET!';
+          let replacementCard = generateUniqueCard(checkDifficulty());
+          replacementCard.appendChild(setText);
+          replacementCard.classList.add('hide-imgs');
+          id('board').replaceChild(replacementCard, selectedCards[i]);
 
           setTimeout(() => {
             newCard.classList.remove('hide-imgs');
             newCard.removeChild(setText);
-          }, 1000)
+          }, timeForMessage)
         }
       } else {
-        for(let i = 0; i < selectedCards.length; i++) {
+        for (let i = 0; i < selectedCards.length; i++) {
           let setText = gen('p');
           setText.textContent = 'Not a Set';
           selectedCards[i].classList.toggle('selected');
@@ -293,12 +301,12 @@
   }
 
   /**
-  * Checks to see if the three selected cards make up a valid set. This is done by comparing each
-  * of the type of attribute against the other two cards. If each four attributes for each card are
-  * either all the same or all different, then the cards make a set. If not, they do not make a set
-  * @param {DOMList} selected - list of all selected cards to check if a set.
-  * @return {boolean} true if valid set false otherwise.
-  */
+   * Checks to see if the three selected cards make up a valid set. This is done by comparing each
+   * of the type of attribute against the other two cards. If each four attributes for each card are
+   * either all the same or all different, then the cards make a set. If not, they do not make a set
+   * @param {DOMList} selected - list of all selected cards to check if a set.
+   * @return {boolean} true if valid set false otherwise.
+   */
   function isASet(selected) {
     let attributes = [];
     for (let i = 0; i < selected.length; i++) {
@@ -317,20 +325,30 @@
     return true;
   }
 
-  // shortcut functions
-
+  /**
+   * Shortcut function for creating an element.
+   */
   function gen(tagName) {
     return document.createElement(tagName);
   }
 
+  /**
+   * Shortcut function for getting an element by an ID.
+   */
   function id(id) {
     return document.getElementById(id);
   }
 
+  /**
+   * Shortcut function for query selecting an item.
+   */
   function qs(selector) {
     return document.querySelector(selector);
   }
 
+  /**
+   * Shortcut function for query selecting all items of a sort.
+   */
   function qsa(selector) {
     return document.querySelectorAll(selector);
   }
