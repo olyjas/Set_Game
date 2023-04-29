@@ -128,6 +128,7 @@ function startGame() {
       for (let i = 0; i < cardsToUnselect.length; i++) {
         cardsToUnselect[i].classList.remove('selected');
         cardsToUnselect[i].classList.remove('hide-imgs');
+        card.removeEventListener('click', cardSelected);
       }
     }
   }
