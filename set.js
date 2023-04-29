@@ -65,8 +65,8 @@
   /**
    * Generates an array containing a random style, shape, color and amount.
    * These contents represent the different attributes each card can generate.
-   * @param {boolean} isEasy if true, difficulty level is easy and style of card will always be solid,
-   *                    otherwise the style attribute should be randomly selected.
+   * @param {boolean} isEasy if true, difficulty level is easy and style of card will
+   *                  always be solid, otherwise the style attribute should be randomly selected.
    * @return {array} a randomly generated array of attributes in the form
    * [STYLE, SHAPE, COLOR, COUNT]
    */
