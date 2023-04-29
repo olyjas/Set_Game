@@ -15,6 +15,8 @@
 function init() {
   id('back-btn').addEventListener('click', toggleViews);
   id('start-btn').addEventListener('click', startGame);
+  id('back-btn').addEventListener('click', () =>
+    id('refresh-btn').disabled = false);
   }
 
 
@@ -65,17 +67,6 @@ function startGame() {
         return randomAttributes;
   }
 
-  //function checkDifficulty() {
-  //  let difficultySetting = qsa('input[name="diff"].checked');
-  //  for (let i = 0; i < difficultySetting.length; i++) {
-  //    if (difficultySetting[i].value === 'easy') {
-  //        return true;
-  //      } else {
-  //        return false;
-  //      }
-  //    }
-  //  }
-
   function checkDifficulty() {
     let difficultySetting = qsa('input');
     for (let i = 0; i < difficultySetting.length; i++) {
@@ -92,20 +83,19 @@ function startGame() {
 
   function generateUniqueCard(isEasy) {
     let cardName;
-    let attributesGenerator = generateRandomAttributes(isEasy);
+    let attributesGenerator = generateRandomAttributes(checkDifficulty());
     let card = gen('div');
-    cardName  = attributesGenerator[0] + '-' + attributesGenerator[1] + '-' + attributesGenerator[0]
+    cardName = attributesGenerator[0] + '-' + attributesGenerator[1]
                  + '-' + attributesGenerator[2] + '-' + attributesGenerator[3];
-
     while(id(cardName) !== null) {
-      attributesGenerator = generateRandomAttributes(isEasy);
-      cardName = attributesGenerator[0] + '-' + attributesGenerator[1] + '-' + attributesGenerator[0]
+      attributesGenerator = generateRandomAttributes(checkDifficulty());
+      cardName = attributesGenerator[0] + '-' + attributesGenerator[1]
       + '-' + attributesGenerator[2] + '-' + attributesGenerator[3];
-      }
-
+    }
     card.addEventListener('click', cardSelected);
     card.id = cardName;
     card.setAttribute('id', cardName);
+    console.log(card.id);
     card.classList.add('card');
 
     for (let i = 0; i < attributesGenerator[3]; i++) {
@@ -190,47 +180,50 @@ function startGame() {
 
   function cardSelected() {
     this.classList.toggle('selected');
-    let selected = qsa('.selected');
-    let result;
-    if (selected.length === 3) {
-      result = isASet(selected);
-      for(let i = 0; i < 3; i++) {
-        let remove = selected[i].id;
-        let card = id(remove);
-        card.classList.remove('selected');
-        let setText = gen('p');
+    let selectedCards = qsa('.selected');
+    let newCard;
 
-        if (result === false) {
+    if (selectedCards.length === 3) {
+      if (isASet(selectedCards)) {
+        id('set-count').textContent = (id('set-count').textContent) + 1;
+        for (let i = 0; i < selectedCards.length; i++) {
+          selectedCards[i].classList.toggle('selected');
+          }
+        for (let i = 0; i < selectedCards.length; i++) {
+            let setText = gen('p');
+            setText.textContent = "SET!"
+            let newCard = generateUniqueCard(checkDifficulty());
+            newCard.appendChild(setText);
+            newCard.classList.add("hide-imgs");
+            id('board').replaceChild(newCard, selectedCards[i]);
+
+            setTimeout(() => {
+              newCard.classList.remove("hide-imgs");
+              newCard.removeChild(setText);
+             }, 1000)
+          }
+        }
+
+      else {
+        for(let i = 0; i < selectedCards.length; i++) {
+          let setText = gen('p');
           setText.textContent = "Not a Set";
+          selectedCards[i].classList.toggle('selected');
+          let remove = selectedCards[i].id;
+          let card = id(remove);
           card.appendChild(setText);
-          card.classList.add('hide-imgs');
+          card.classList.add("hide-imgs");
 
-          setTimeout( () => {
-            id(remove).classList.remove('hide-imgs');
+          setTimeout(() => {
+            id(remove).classList.remove("hide-imgs");
             id(remove).removeChild(setText);
           }, 1000)
 
-        } else {
-          setText.textContent = "SET!";
-          let difficultySetting = checkDifficulty();
-          let newCard = generateUniqueCard(difficultySetting);
-          createBoard(newCard);
-          newCard.appendChild(setText);
-          newCard.addList.add('hide-imgs');
-          let parent = card.parentNode;
-          parent.replaceChild(newCard, card);
-
-          setTimeout( () => {
-            newCard.classList.remove('hide-imgs');
-            newCard.removeChild(setText);
-          }, 1000)
+          }
         }
       }
-      if(result === true) {
-        id('set-count').textContent = id('set-count').textContent + 1;
-      }
     }
-  }
+
   /**
    * Checks to see if the three selected cards make up a valid set. This is done by comparing each
    * of the type of attribute against the other two cards. If each four attributes for each card are
