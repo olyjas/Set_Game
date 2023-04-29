@@ -272,6 +272,7 @@
    * Helper function for cardsSelected providing the functionality for if the cards make a set.
    */
   function yesSet() {
+    let selectedCards = qsa('.selected');
     const timeForMessageY = 1000;
     if (isASet(selectedCards)) {
       id('set-count').textContent = parseInt(id('set-count').textContent) + 1;
@@ -299,6 +300,7 @@
    * a set.
    */
   function noSet() {
+    let selectedCards = qsa('.selected');
     const timeForMessageN = 1000;
     for (let i = 0; i < selectedCards.length; i++) {
       let setText = gen('p');
